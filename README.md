@@ -1,8 +1,8 @@
 # Simple Image Annotator
 
 ## Description
-All image annotators I found either didn't work or had some overhead in the setup. So, I tried to make this one simple to run and simple to use.
-![action](./actionshot.png)
+Fork of spg715 Image annotator tool. This fork improves the usability by showing the user the drawn bounding box and
+will output a csv that is ready to use with the turicreate object detection framework.
 
 ## Install
 * Install Flask
@@ -25,13 +25,12 @@ $ python app.py /images/directory --out test.csv
 
 ## Output
 * in keeping with simplicity, the output is to a csv file with the following fields
-    * *id* - id of the bounding box within the image
-    * *name* - name of the bounding box within the image
-    * *image* - image the bounding box is associated with
-    * *xMin* - min x value of the bounding box
-    * *xMax* - max x value of the bounding box
-    * *yMin* - min y value of the bounding box
-    * *yMax* - max y value of the bounding box
+    * *name* - name of the image file
+    * *label* - given label for the bounding box
+    * *height* - height of the bounding box
+    * *width* - width of the bounding box
+    * *x* - the x coordinate of the bounding boxes center
+    * *y* - the y coordinate of the bounding boxes center
 
 ## HOWTOs
 * draw a bounding box

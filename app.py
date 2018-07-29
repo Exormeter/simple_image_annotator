@@ -23,21 +23,21 @@ def tagger():
     print(not_end)
     return render_template('tagger.html', not_end=not_end, directory=directory, image=image, labels=labels, head=app.config["HEAD"] + 1, len=len(app.config["FILES"]))
 
+
 @app.route('/next')
 def next():
     image = app.config["FILES"][app.config["HEAD"]]
     app.config["HEAD"] = app.config["HEAD"] + 1
     with open(app.config["OUT"],'a') as f:
         for label in app.config["LABELS"]:
-            f.write(image + "," +
-            label["id"] + "," +
-            label["name"] + "," +
-            str(round(float(label["xMin"]))) + "," +
-            str(round(float(label["xMax"]))) + "," +
-            str(round(float(label["yMin"]))) + "," +
-            str(round(float(label["yMax"]))) + "\n")
+            height = int(float(label["yMax"])) - int(float(label["yMin"]))
+            width = int(float(label["xMax"])) - int(float(label["xMin"]))
+            xCenter = int(float(label["xMin"])) + int(round(width / 2))
+            yCenter = int(float(label["yMin"])) + int(round(height / 2))
+            f.write(image +"," + label["name"]+"," + str(height) + "," + str(width) + "," + str(xCenter) + "," + str(yCenter)+ "\n")
     app.config["LABELS"] = []
     return redirect(url_for('tagger'))
+
 
 @app.route("/bye")
 def bye():
@@ -64,6 +64,7 @@ def remove(id):
 def label(id):
     name = request.args.get("name")
     app.config["LABELS"][int(id) - 1]["name"] = name
+    print(name)
     return redirect(url_for('tagger'))
 
 # @app.route('/prev')
@@ -71,10 +72,10 @@ def label(id):
 #     app.config["HEAD"] = app.config["HEAD"] - 1
 #     return redirect(url_for('tagger'))
 
-@app.route('/image/<f>')
-def images(f):
+@app.route('/image/<fileName>')
+def images(fileName):
     images = app.config['IMAGES']
-    return send_file(images + f)
+    return send_file(images + fileName)
 
 
 if __name__ == "__main__":
@@ -97,10 +98,8 @@ if __name__ == "__main__":
     app.config["FILES"] = files
     app.config["HEAD"] = 0
     if args.out == None:
-        app.config["OUT"] = "out.csv"
+        app.config["OUT"] = "data.txt"
     else:
         app.config["OUT"] = args.out
     print(files)
-    with open("out.csv",'w') as f:
-        f.write("image,id,name,xMin,xMax,yMin,yMax\n")
     app.run(debug="True")
